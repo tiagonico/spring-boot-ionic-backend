@@ -6,12 +6,20 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.tiago.cursomc.domain.Cliente;
 import com.tiago.cursomc.domain.enums.TipoCliente;
 import com.tiago.cursomc.dto.ClienteNewDTO;
+import com.tiago.cursomc.repositories.ClienteRepository;
 import com.tiago.cursomc.resources.exception.FieldMessage;
 import com.tiago.cursomc.services.validation.utils.BR;
 
 public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
 	@Override
 	public void initialize(ClienteInsert ann) {
 	}
@@ -26,6 +34,22 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 		}
 		if(objDto.getTipo().equals(TipoCliente.PESSOAJURIDICA.getCod()) && !BR.isValidCnpj(objDto.getCpfOuCnpj()) ) {
 			list.add(new FieldMessage("cpfOuCnpj", "CNPJ inválido"));
+		}
+		
+		Cliente auxEmail = clienteRepository.findByEmail(objDto.getEmail());
+		Cliente auxCpfOuCnpj = clienteRepository.findByCpfOuCnpj(objDto.getCpfOuCnpj());
+		
+		if(auxEmail != null ) {
+			list.add(new FieldMessage("email", "Email já existente"));
+		}
+		if(auxCpfOuCnpj != null ) {
+			if(auxCpfOuCnpj.getTipo().getCod() ==  TipoCliente.PESSOAFISICA.getCod() ) {
+				list.add(new FieldMessage("cpfOuCnpj", "CPF já existente"));
+			}
+			if(auxCpfOuCnpj.getTipo().getCod() ==  TipoCliente.PESSOAJURIDICA.getCod() ) {
+				list.add(new FieldMessage("cpfOuCnpj", "CNPJ já existente"));
+			}
+			
 		}
 		
 		for (FieldMessage e : list) {
