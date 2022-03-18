@@ -112,9 +112,6 @@ public class Cliente implements Serializable {
 		this.pedidos = pedidos;
 	}
 
-	public void setTipo(Integer tipo) {
-		this.tipo = tipo;
-	}
 
 	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
 		super();
