@@ -1,12 +1,14 @@
 package com.tiago.cursomc.services;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tiago.cursomc.domain.Categoria;
 import com.tiago.cursomc.domain.ItemPedido;
 import com.tiago.cursomc.domain.PagamentoComBoleto;
 import com.tiago.cursomc.domain.Pedido;
@@ -47,6 +49,10 @@ public class PedidoService {
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Pedido.class.getName()));
 	}
 	
+	public List<Pedido> findAll() {
+		return repo.findAll();		
+	}
+	
 	@Transactional
 	public Pedido insert(Pedido obj) {
 		obj.setId(null);
@@ -70,7 +76,7 @@ public class PedidoService {
 			ip.setPedido(obj);
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
-		emailService.sendOrderConfirmationEmail(obj);
+		emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
 	}
 }

@@ -2,6 +2,8 @@ package com.tiago.cursomc.resources;
 
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -32,6 +34,14 @@ public class PedidoResource {
 		Pedido obj = service.find(id);
 		
 		return ResponseEntity.ok().body(obj);		
+	}
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<Pedido>> findAll() {
+		
+		List<Pedido> list = service.findAll();
+		
+		return ResponseEntity.ok().body(list);		
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
